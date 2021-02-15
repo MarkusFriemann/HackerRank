@@ -1,10 +1,10 @@
-### find the Youtube Video to this Code: https://youtu.be/TEPKmOmzess
-### find the Solution of Interviews Hackerrank Problem: https://www.youtube.com/watch?v=qWyiiz4Um-Q&ab_channel=MM
+-- find the Youtube Video to this Code: https://youtu.be/TEPKmOmzess
+-- find the Solution of Interviews Hackerrank Problem: https://www.youtube.com/watch?v=qWyiiz4Um-Q&ab_channel=MM
 
 
-### Wrong Statement in 46:20. Why is it wrong?
+-- Wrong Statement in 46:20. Why is it wrong?
 
-### How do we get total_submissions = 67558?
+-- How do we get total_submissions = 67558?
 
 
 WITH total_submit as (
