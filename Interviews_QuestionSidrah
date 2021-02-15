@@ -1,0 +1,59 @@
+### find the Youtube Video to this Code: https://youtu.be/TEPKmOmzess
+### find the Solutions of Interviews Hackerrank Problem: https://www.youtube.com/watch?v=qWyiiz4Um-Q&ab_channel=MM
+
+
+### Wrong Statement in 46:20. Why is it wrong?
+
+### How do we get total_submissions = 67558?
+
+
+WITH total_submit as (
+
+
+	SELECT
+			coll.contest_id,
+			ss.total_submissions,
+			ss.total_accepted_submissions
+FROM		Colleges coll
+INNER JOIN  Challenges chall ON chall.college_id = coll.college_id
+INNER JOIN  Submission_Stats ss ON chall.challenge_id = ss.challenge_id
+
+),
+
+
+total_view as (
+
+	SELECT
+			coll.contest_id,
+			vs.total_views,
+			vs.total_unique_views
+FROM		Colleges coll
+INNER JOIN  Challenges chall ON chall.college_id = coll.college_id
+INNER JOIN  View_Stats vs ON chall.challenge_id = vs.challenge_id
+
+
+)
+
+
+SELECT
+			cont.contest_id,
+			cont.hacker_id,
+			cont.name,
+			SUM(ts.total_submissions),
+			sum(ts.total_accepted_submissions),
+			SUM(tv.total_views),
+			SUM(tv.total_unique_views)
+FROM		Contests cont
+INNER JOIN  total_submit ts ON ts.contest_id = cont.contest_id
+INNER JOIN  total_view tv ON tv.contest_id = cont.contest_id
+
+
+GROUP BY   cont.contest_id, cont.hacker_id, cont.name
+HAVING     SUM(ts.total_submissions) > 0
+OR		   SUM(ts.total_accepted_submissions) > 0
+OR		   SUM(tv.total_views) > 0
+OR		   SUM(tv.total_unique_views) > 0
+		
+ORDER BY cont.contest_id
+
+;
