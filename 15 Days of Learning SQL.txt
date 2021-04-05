@@ -1,0 +1,77 @@
+DECLARE @consistent_hackers TABLE
+(hacker_id int,
+submission_date date
+)
+;
+
+DECLARE @count_hackers TABLE
+(hacker_id int,
+submission_date date
+);
+
+DECLARE @subdate date;
+DECLARE @remainingdate date;
+
+
+INSERT INTO @consistent_hackers
+SELECT
+	hacker_id,
+	submission_date
+FROM	submissions
+WHERE   submission_date LIKE '2016-03-01'
+;
+
+SET @subdate = '2016-03-01';
+SET @remainingdate = '2016-03-01';
+
+
+WHILE @subdate < '2016-03-15'
+BEGIN
+
+SET @subdate = DATEADD(day,1,@subdate);
+
+INSERT INTO @consistent_hackers
+SELECT
+	s.hacker_id,
+	s.submission_date
+FROM    submissions s
+JOIN    @consistent_hackers ch ON ch.hacker_id = s.hacker_id AND
+	ch.submission_date LIKE @remainingdate
+WHERE   s.submission_date LIKE @subdate;
+
+SET @remainingdate = DATEADD(day,1,@remainingdate);
+
+END;
+
+INSERT INTO @count_hackers
+SELECT
+	COUNT(DISTINCT hacker_id),
+	submission_date
+FROM    @consistent_hackers
+GROUP BY submission_date;
+
+
+WITH max_hacker as (
+
+SELECT
+    ROW_NUMBER() OVER(PARTITION BY submission_date ORDER BY COUNT(s.hacker_id) DESC, s.hacker_id asc) as Row#
+    ,s.hacker_id
+    ,submission_date
+    ,name
+FROM submissions s
+JOIN hackers h ON h.hacker_id = s.hacker_id
+GROUP BY submission_date, s.hacker_id, name
+
+)
+
+SELECT
+        s.submission_date,
+        ch.hacker_id,
+        mh.hacker_id,
+        mh.name
+FROM    submissions s
+JOIN    max_hacker mh ON mh.submission_date = s.submission_date          and Row# = 1
+JOIN    @count_hackers ch ON ch.submission_date = s.submission_date
+--WHERE    s.submission_date LIKE '2016-03-01'
+GROUP BY s.submission_date, mh.hacker_id, mh.name, ch.hacker_id
+ORDER BY s.submission_date
