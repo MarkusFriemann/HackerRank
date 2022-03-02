@@ -1,0 +1,20 @@
+-- Solution for MS SQL Server
+-- Explanation for this code: https://www.youtube.com/watch?v=lNgL1HFTA-g&lc=Ugwq2PO6Dr3sFPct6lV4AaABAg&ab_channel=TheCodingMentor
+-- Problem from HackerRank:   https://www.hackerrank.com/challenges/the-company/problem?isFullScreen=true
+
+
+SELECT
+        c.company_code,
+        founder,
+        COUNT(DISTINCT lm.lead_manager_code),
+        COUNT(DISTINCT sm.senior_manager_code),
+        COUNT(DISTINCT m.manager_code),
+        COUNT(DISTINCT e.employee_code)
+FROM    COMPANY c
+LEFT JOIN lead_manager lm ON lm.company_code = c.company_code
+LEFT JOIN senior_manager sm ON sm.company_code = c.company_code
+LEFT JOIN manager m ON m.company_code = c.company_code
+LEFT JOIN employee e ON e.company_code = c.company_code
+GROUP BY c.company_code, founder
+ORDER BY company_code asc
+;
